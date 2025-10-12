@@ -1,0 +1,121 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("supabaseUrl")
+  directUrl = env("directUrl")
+}
+
+model User {
+  id           Int      @id @default(autoincrement())
+  email        String   @unique @db.VarChar(255)
+  passwordHash String   @map("password_hash") @db.VarChar(255)
+  fullName     String   @map("full_name") @db.VarChar(255)
+  role         Role     @default(USER)
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  quizAttempts QuizAttempt[]
+
+  @@index([email])
+  @@index([role])
+  @@map("users")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model Skill {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique @db.VarChar(100)
+  description String?  @db.Text
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  questions    Question[]
+  quizAttempts QuizAttempt[]
+
+  @@index([name])
+  @@map("skills")
+}
+
+model Question {
+  id            Int        @id @default(autoincrement())
+  skillId       Int        @map("skill_id")
+  questionText  String     @map("question_text") @db.Text
+  optionA       String     @map("option_a") @db.VarChar(500)
+  optionB       String     @map("option_b") @db.VarChar(500)
+  optionC       String     @map("option_c") @db.VarChar(500)
+  optionD       String     @map("option_d") @db.VarChar(500)
+  correctAnswer Answer     @map("correct_answer")
+  difficulty    Difficulty @default(MEDIUM)
+  createdAt     DateTime   @default(now()) @map("created_at")
+  updatedAt     DateTime   @updatedAt @map("updated_at")
+
+  skill Skill @relation(fields: [skillId], references: [id], onDelete: Cascade)
+
+  quizAnswers QuizAnswer[]
+
+  @@index([skillId])
+  @@index([difficulty])
+  @@map("questions")
+}
+
+enum Answer {
+  A
+  B
+  C
+  D
+}
+
+enum Difficulty {
+  EASY
+  MEDIUM
+  HARD
+}
+
+model QuizAttempt {
+  id             Int       @id @default(autoincrement())
+  userId         Int       @map("user_id")
+  skillId        Int       @map("skill_id")
+  totalQuestions Int       @map("total_questions")
+  correctAnswers Int       @default(0) @map("correct_answers")
+  score          Decimal   @default(0) @db.Decimal(5, 2)
+  startedAt      DateTime  @default(now()) @map("started_at")
+  completedAt    DateTime? @map("completed_at")
+
+  // relations
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  skill Skill @relation(fields: [skillId], references: [id], onDelete: Cascade)
+
+  // answers associated with this attempt
+  quizAnswers QuizAnswer[]
+
+  @@index([userId])
+  @@index([skillId])
+  @@index([completedAt])
+  @@map("quiz_attempts")
+}
+
+model QuizAnswer {
+  id             Int      @id @default(autoincrement())
+  attemptId      Int      @map("attempt_id")
+  questionId     Int      @map("question_id")
+  selectedAnswer Answer   @map("selected_answer")
+  isCorrect      Boolean  @map("is_correct")
+  answeredAt     DateTime @default(now()) @map("answered_at")
+
+  attempt  QuizAttempt @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  question Question    @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@index([attemptId])
+  @@index([questionId])
+  @@map("quiz_answers")
+}
