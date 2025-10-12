@@ -1,5 +1,5 @@
 const bcrypt = require("bcryptjs");
-const prisma = require("../config/prisma");
+const prisma = require("../configs/prisma");
 const { generateToken } = require("../utils/jwt");
 
 const register = async (req, res) => {
