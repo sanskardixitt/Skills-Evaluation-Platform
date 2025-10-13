@@ -41,12 +41,16 @@ const register = async (req, res) => {
 
     const passwordHash = await bcrypt.hash(password, 10);
 
+    // First registered user becomes ADMIN
+    const totalUsers = await prisma.user.count();
+    const role = totalUsers === 0 ? "ADMIN" : "USER";
+
     const user = await prisma.user.create({
       data: {
         email: email.toLowerCase(),
         passwordHash,
         fullName,
-        role: "USER",
+        role,
       },
       select: {
         id: true,
