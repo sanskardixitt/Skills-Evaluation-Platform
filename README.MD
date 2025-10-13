@@ -2,11 +2,11 @@
 
 > A full-stack web application for conducting skill-based assessments with comprehensive performance analytics and reporting.
 
-[![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg)](https://nodejs.org/)
-[![Express](https://img.shields.io/badge/Express-4.18-blue.svg)](https://expressjs.com/)
-[![Prisma](https://img.shields.io/badge/Prisma-5.7-brightgreen.svg)](https://www.prisma.io/)
-[![React](https://img.shields.io/badge/React-18.2-blue.svg)](https://reactjs.org/)
-[![MySQL](https://img.shields.io/badge/MySQL-8.0-orange.svg)](https://www.mysql.com/)
+[![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg)](https://nodejs.org/)  
+[![Express](https://img.shields.io/badge/Express-4.18-blue.svg)](https://expressjs.com/)  
+[![Prisma](https://img.shields.io/badge/Prisma-5.7-brightgreen.svg)](https://www.prisma.io/)  
+[![React](https://img.shields.io/badge/React-18.2-blue.svg)](https://reactjs.org/)  
+[![Supabase](https://img.shields.io/badge/Supabase-2023-3ECF8E.svg)](https://supabase.com/)
 
 ## Overview
 
