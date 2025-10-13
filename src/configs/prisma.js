@@ -12,9 +12,8 @@
  * every customer, you maintain a fleet that all customers share.
  */
 
-// Import PrismaClient from the generated output path configured in prisma/schema.prisma
-// generator client { output = "../src/generated/prisma" }
-const { PrismaClient } = require("../generated/prisma");
+// Import PrismaClient from the standard @prisma/client package
+const { PrismaClient } = require("@prisma/client");
 
 const globalForPrisma = global;
 
