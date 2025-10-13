@@ -134,7 +134,7 @@ npm start
 
 Access the application at `http://localhost:3000`
 
-## 📦 Using Docker
+## Using Docker
 
 ```bash
 # Start all services
@@ -147,7 +147,7 @@ docker-compose logs -f
 docker-compose down
 ```
 
-## 🔑 Default Credentials
+## Default Credentials
 
 After seeding, use these credentials:
 
@@ -373,10 +373,6 @@ curl -X POST http://localhost:5000/api/auth/login \
 - Frontend code splitting
 - API response caching (optional with Redis)
 
-
-
-
-
 ## Troubleshooting
 
 **Database connection failed**
@@ -395,31 +391,9 @@ mysql://USER:PASSWORD@HOST:PORT/DATABASE
 npx prisma generate
 ```
 
-**Port already in use**
-
-```bash
-# Kill process on port 5000 (Unix)
-lsof -ti:5000 | xargs kill -9
-
-# Or change PORT in .env
-```
-
 **CORS errors**
 
 - Ensure FRONTEND_URL in backend .env matches your frontend URL
-
-## Future Enhancements
-
-- [ ] Email verification on registration
-- [ ] Password reset functionality
-- [ ] Quiz timer feature
-- [ ] Question difficulty analytics
-- [ ] Leaderboard system
-- [ ] Redis caching layer
-- [ ] GraphQL API option
-- [ ] WebSocket for real-time updates
-- [ ] Mobile app (React Native)
-- [ ] Advanced admin analytics dashboard
 
 ## Author
 

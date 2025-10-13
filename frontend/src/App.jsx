@@ -23,19 +23,11 @@ function PrivateRoute({ children }) {
   return token ? children : <Navigate to="/login" replace />;
 }
 
-/**
- * Protects routes that require ADMIN role.
- * Assumes the route is already wrapped with PrivateRoute if authentication is required.
- */
 function AdminRoute({ children }) {
   const { user } = useAuth();
   return user?.role === "ADMIN" ? children : <Navigate to="/" replace />;
 }
 
-/**
- * App layout — header/nav + main content area.
- * Calls useAuth() once and uses optional chaining for safety.
- */
 function Layout({ children }) {
   const { token, logout, user } = useAuth();
 
@@ -87,9 +79,6 @@ function Layout({ children }) {
   );
 }
 
-/**
- * Root App component — wraps everything in AuthProvider so useAuth() works inside children.
- */
 export default function App() {
   return (
     <AuthProvider>
@@ -153,8 +142,6 @@ export default function App() {
               </PrivateRoute>
             }
           />
-
-          {/* Admin routes — protected by authentication and role */}
           <Route
             path="/admin"
             element={
