@@ -1,3 +1,5 @@
+// src/App.jsx
+import React from "react";
 import { Routes, Route, Navigate, Link } from "react-router-dom";
 import { AuthProvider, useAuth } from "./context/AuthContext.jsx";
 import Login from "./pages/Login.jsx";
@@ -12,14 +14,31 @@ import AdminHome from "./pages/admin/AdminHome.jsx";
 import AdminSkills from "./pages/admin/AdminSkills.jsx";
 import AdminQuestions from "./pages/admin/AdminQuestions.jsx";
 
+/**
+ * Protects routes that require authentication.
+ * Renders `children` if authenticated; otherwise redirects to /login.
+ */
 function PrivateRoute({ children }) {
   const { token } = useAuth();
-  return token ? children : <Navigate to="/login" />;
+  return token ? children : <Navigate to="/login" replace />;
 }
 
-function Layout({ children }) {
-  const { token, logout } = useAuth();
+/**
+ * Protects routes that require ADMIN role.
+ * Assumes the route is already wrapped with PrivateRoute if authentication is required.
+ */
+function AdminRoute({ children }) {
   const { user } = useAuth();
+  return user?.role === "ADMIN" ? children : <Navigate to="/" replace />;
+}
+
+/**
+ * App layout — header/nav + main content area.
+ * Calls useAuth() once and uses optional chaining for safety.
+ */
+function Layout({ children }) {
+  const { token, logout, user } = useAuth();
+
   return (
     <div className="min-h-screen">
       <header className="bg-oxford_blue-500 text-white">
@@ -27,12 +46,14 @@ function Layout({ children }) {
           <Link to="/" className="font-semibold">
             Skill Portal
           </Link>
+
           <nav className="flex gap-3 text-sm">
             {token && <Link to="/skills">Skills</Link>}
             {token && <Link to="/history">History</Link>}
             {token && <Link to="/profile">Profile</Link>}
             {token && user?.role === "ADMIN" && <Link to="/admin">Admin</Link>}
           </nav>
+
           <div className="ml-auto">
             {!token ? (
               <div className="flex gap-2">
@@ -60,11 +81,15 @@ function Layout({ children }) {
           </div>
         </div>
       </header>
+
       <main className="max-w-5xl mx-auto px-4 py-6">{children}</main>
     </div>
   );
 }
 
+/**
+ * Root App component — wraps everything in AuthProvider so useAuth() works inside children.
+ */
 export default function App() {
   return (
     <AuthProvider>
@@ -72,7 +97,9 @@ export default function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/" element={<Navigate to="/skills" />} />
+
+          <Route path="/" element={<Navigate to="/skills" replace />} />
+
           <Route
             path="/skills"
             element={
@@ -81,6 +108,7 @@ export default function App() {
               </PrivateRoute>
             }
           />
+
           <Route
             path="/quiz/start/:skillId"
             element={
@@ -89,6 +117,7 @@ export default function App() {
               </PrivateRoute>
             }
           />
+
           <Route
             path="/quiz/attempt/:attemptId"
             element={
@@ -97,6 +126,7 @@ export default function App() {
               </PrivateRoute>
             }
           />
+
           <Route
             path="/results/:attemptId"
             element={
@@ -105,6 +135,7 @@ export default function App() {
               </PrivateRoute>
             }
           />
+
           <Route
             path="/history"
             element={
@@ -113,6 +144,7 @@ export default function App() {
               </PrivateRoute>
             }
           />
+
           <Route
             path="/profile"
             element={
@@ -121,12 +153,15 @@ export default function App() {
               </PrivateRoute>
             }
           />
-          {/* Admin routes */}
+
+          {/* Admin routes — protected by authentication and role */}
           <Route
             path="/admin"
             element={
               <PrivateRoute>
-                {user?.role === "ADMIN" ? <AdminHome /> : <Navigate to="/" />}
+                <AdminRoute>
+                  <AdminHome />
+                </AdminRoute>
               </PrivateRoute>
             }
           />
@@ -134,7 +169,9 @@ export default function App() {
             path="/admin/skills"
             element={
               <PrivateRoute>
-                {user?.role === "ADMIN" ? <AdminSkills /> : <Navigate to="/" />}
+                <AdminRoute>
+                  <AdminSkills />
+                </AdminRoute>
               </PrivateRoute>
             }
           />
@@ -142,11 +179,9 @@ export default function App() {
             path="/admin/questions"
             element={
               <PrivateRoute>
-                {user?.role === "ADMIN" ? (
+                <AdminRoute>
                   <AdminQuestions />
-                ) : (
-                  <Navigate to="/" />
-                )}
+                </AdminRoute>
               </PrivateRoute>
             }
           />
