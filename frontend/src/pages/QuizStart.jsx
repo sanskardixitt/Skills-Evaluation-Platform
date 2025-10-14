@@ -29,27 +29,42 @@ export default function QuizStart() {
   };
 
   return (
-    <div className="max-w-md">
-      <h1 className="text-2xl font-semibold mb-4 text-oxford_blue-500">
+    <div className="max-w-md mx-auto mt-12">
+      <h1 className="text-3xl font-bold mb-6 text-oxford_blue-500 text-center">
         Start Quiz
       </h1>
-      {error && <div className="mb-3 text-red-600">{error}</div>}
-      <div className="space-y-3 bg-white p-4 rounded shadow">
-        <label className="block text-sm">Number of questions</label>
-        <input
-          className="w-full border rounded px-3 py-2"
-          type="number"
-          min="1"
-          max="50"
-          value={questionCount}
-          onChange={(e) => setQuestionCount(e.target.value)}
-        />
+
+      {error && (
+        <div className="mb-4 text-red-600 bg-red-50 border border-red-200 p-3 rounded-md text-center">
+          {error}
+        </div>
+      )}
+
+      <div className="bg-white p-6 rounded-xl shadow-md border border-gray-100 space-y-5">
+        <div>
+          <label className="block text-sm font-medium text-gray-600 mb-1">
+            Number of questions
+          </label>
+          <input
+            type="number"
+            min="1"
+            max="50"
+            value={questionCount}
+            onChange={(e) => setQuestionCount(e.target.value)}
+            className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-oxford_blue-500 focus:border-oxford_blue-500 transition"
+          />
+        </div>
+
         <button
           disabled={loading}
-          className="px-4 py-2 rounded bg-orange_web-500 text-black"
           onClick={start}
+          className={`w-full px-4 py-2 rounded-lg font-semibold text-black ${
+            loading
+              ? "bg-orange_web-400 cursor-not-allowed"
+              : "bg-orange_web-500 hover:bg-orange_web-400 transition-colors"
+          }`}
         >
-          {loading ? "Starting..." : "Start quiz"}
+          {loading ? "Starting..." : "Start Quiz"}
         </button>
       </div>
     </div>

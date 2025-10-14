@@ -8,22 +8,41 @@ export default function Profile() {
     if (!user) fetchProfile();
   }, []);
 
-  if (!user) return <div>Loading...</div>;
+  if (!user)
+    return (
+      <div className="flex justify-center items-center h-64 text-gray-500 text-lg">
+        Loading...
+      </div>
+    );
 
   return (
-    <div className="max-w-md">
-      <h1 className="text-2xl font-semibold mb-4 text-oxford_blue-500">
+    <div className="max-w-md mx-auto mt-12 bg-gray-50 rounded-xl shadow-md p-6">
+      <h1 className="text-3xl font-bold mb-6 text-oxford_blue-500 text-center">
         Profile
       </h1>
-      <div className="bg-white rounded p-4 shadow">
-        <div>
-          <span className="font-medium">Name:</span> {user.fullName}
-        </div>
-        <div>
-          <span className="font-medium">Email:</span> {user.email}
-        </div>
-        <div>
-          <span className="font-medium">Role:</span> {user.role}
+
+      <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-100">
+        <div className="flex flex-col gap-4">
+          <div>
+            <span className="block text-sm font-semibold text-gray-500 uppercase">
+              Name
+            </span>
+            <p className="text-lg text-gray-800">{user.fullName}</p>
+          </div>
+
+          <div>
+            <span className="block text-sm font-semibold text-gray-500 uppercase">
+              Email
+            </span>
+            <p className="text-lg text-gray-800">{user.email}</p>
+          </div>
+
+          <div>
+            <span className="block text-sm font-semibold text-gray-500 uppercase">
+              Role
+            </span>
+            <p className="text-lg text-gray-800 capitalize">{user.role}</p>
+          </div>
         </div>
       </div>
     </div>

@@ -18,7 +18,6 @@ export default function Results() {
         Results
       </h1>
       <div className="bg-white rounded p-4 shadow">
-        <div>Attempt #{attemptId}</div>
         <div>Skill: {result.skill?.name}</div>
         <div>Total: {result.totalQuestions}</div>
         <div>Correct: {result.correctAnswers}</div>

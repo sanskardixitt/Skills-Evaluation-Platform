@@ -13,7 +13,6 @@ export default function QuizAttempt() {
 
   useEffect(() => {
     if (!data) {
-      // if page refreshed and state lost, cannot reconstruct questions; send user back
       navigate("/skills");
     }
   }, [data, navigate]);
