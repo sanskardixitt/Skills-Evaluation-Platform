@@ -7,10 +7,18 @@ export default function AdminSkills() {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(true);
 
   const load = async () => {
-    const res = await api.get("/skills");
-    setSkills(res.data.data.skills);
+    try {
+      setLoading(true);
+      const res = await api.get("/skills");
+      setSkills(res.data.data.skills);
+    } catch (e) {
+      setError(e?.response?.data?.message || "Failed to load skills");
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -36,59 +44,93 @@ export default function AdminSkills() {
   };
 
   return (
-    <div>
-      <div className="flex items-center gap-2 mb-4">
-        <Link to="/admin" className="text-sm text-oxford_blue-600 underline">
-          Back
+    <div className="max-w-4xl mx-auto mt-10">
+      <div className="mb-4">
+        <Link
+          to="/admin"
+          className="text-sm text-oxford_blue-600 underline hover:text-oxford_blue-500 transition"
+        >
+          &larr; Back
         </Link>
       </div>
-      <h1 className="text-2xl font-semibold mb-4 text-oxford_blue-500">
-        Skills
-      </h1>
-      {error && <div className="mb-3 text-red-600">{error}</div>}
 
-      <div className="bg-white rounded p-4 shadow mb-4 grid gap-2">
+      <h1 className="text-3xl font-bold mb-6 text-oxford_blue-500 text-center">
+        Skills Management
+      </h1>
+
+      {error && (
+        <div className="mb-4 text-red-600 bg-red-50 border border-red-200 p-3 rounded-md text-center">
+          {error}
+        </div>
+      )}
+
+      {/* Create Skill Form */}
+      <div className="bg-white p-6 rounded-xl shadow-md border border-gray-100 mb-6 grid gap-4">
         <input
-          className="border rounded px-3 py-2"
+          className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-oxford_blue-500 transition"
           placeholder="Name"
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
         <input
-          className="border rounded px-3 py-2"
+          className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-oxford_blue-500 transition"
           placeholder="Description"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
         />
         <button
-          className="w-max px-3 py-1 rounded bg-orange_web-500 text-black"
+          className="w-max px-4 py-2 rounded-lg font-medium bg-orange_web-500 text-black hover:bg-orange_web-400 transition"
           onClick={create}
         >
-          Create
+          Create Skill
         </button>
       </div>
 
-      <div className="space-y-2">
-        {skills.map((s) => (
-          <div
-            key={s.id}
-            className="bg-white rounded p-3 shadow flex justify-between"
-          >
-            <div>
-              <div className="font-medium">{s.name}</div>
-              <div className="text-sm">
-                Questions: {s._count?.questions || 0}
-              </div>
-            </div>
-            <button
-              className="px-3 py-1 rounded bg-red-600 text-white"
-              onClick={() => remove(s.id)}
+      {/* Skills List */}
+      {loading ? (
+        <div className="space-y-4">
+          {[1, 2, 3].map((i) => (
+            <div
+              key={i}
+              className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 animate-pulse"
             >
-              Delete
-            </button>
-          </div>
-        ))}
-      </div>
+              <div className="h-5 bg-gray-200 rounded w-1/3 mb-2"></div>
+              <div className="h-4 bg-gray-200 rounded w-1/4"></div>
+            </div>
+          ))}
+        </div>
+      ) : skills.length === 0 ? (
+        <div className="text-gray-500 text-center py-8 bg-white rounded-lg shadow-sm border border-gray-100">
+          No skills available.
+        </div>
+      ) : (
+        <div className="space-y-4">
+          {skills.map((s) => (
+            <div
+              key={s.id}
+              className="bg-white rounded-xl shadow-sm border border-gray-100 p-5 flex justify-between items-center hover:shadow-md transition-shadow duration-200"
+            >
+              <div>
+                <div className="text-lg font-semibold text-oxford_blue-500">
+                  {s.name}
+                </div>
+                <div className="text-sm text-gray-600 mt-1">
+                  Questions:{" "}
+                  <span className="font-medium text-gray-800">
+                    {s._count?.questions || 0}
+                  </span>
+                </div>
+              </div>
+              <button
+                className="px-3 py-1 rounded-lg bg-red-600 text-white hover:bg-red-500 transition"
+                onClick={() => remove(s.id)}
+              >
+                Delete
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
